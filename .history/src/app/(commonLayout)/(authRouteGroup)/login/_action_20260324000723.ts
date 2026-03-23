@@ -24,12 +24,27 @@ export const loginAction = async (payload : ILoginPayload, redirectPath ?: strin
         const response = await httpClient.post<ILoginResponse>("/auth/login", parsedPayload.data);
 
         const { accessToken, refreshToken, token, user} = response.data;
-        const {role,  needPasswordChange, email} = user;
+        const {role,emailVerified,  needPasswordChange, email} = user;
         await setTokenInCookies("accessToken", accessToken);
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60); 
 
- 
+        // if(!emailVerified){
+        //     redirect("/verify-email");
+        // }else // in the catch block
+        if (!emailVerified) {
+    redirect(`/verify-email?email=${email}`);
+} else if (needPasswordChange) {
+    redirect(`/reset-password?email=${email}`);
+} else {
+    const targetPath =
+        redirectPath &&
+        isValidRedirectForRole(redirectPath, role as UserRole)
+            ? redirectPath
+            : getDefaultDashboardRoute(role as UserRole);
+
+    redirect(targetPath);
+}   
         if(needPasswordChange){
             
             redirect(`/reset-password?email=${email}`);

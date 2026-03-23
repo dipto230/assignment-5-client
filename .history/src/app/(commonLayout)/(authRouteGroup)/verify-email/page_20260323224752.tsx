@@ -6,8 +6,11 @@ interface VerifyEmailPageProps {
   };
 }
 
+
 const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
-  return <VerifyEmailForm email={searchParams.email} />;
+  const email = searchParams.email;
+
+  return <VerifyEmailForm email={email} />;
 };
 
 export default VerifyEmailPage;

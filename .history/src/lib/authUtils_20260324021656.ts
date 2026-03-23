@@ -45,7 +45,7 @@ export const isRouteMatches = (pathname : string, routes : RouteConfig) => {
 
 export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "LAWYER" | "USER" | "COMMON" | null => {
     if(isRouteMatches(pathname, doctorProtectedRoutes)) {
-        return "LAWYER";
+        return "DOCTOR";
     }
 
     // if (isRouteMatches(pathname, superAdminProtectedRoutes)) {

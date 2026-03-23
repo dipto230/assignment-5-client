@@ -29,7 +29,10 @@ export const loginAction = async (payload : ILoginPayload, redirectPath ?: strin
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60); 
 
- 
+        // if(!emailVerified){
+        //     redirect("/verify-email");
+        // }else // in the catch block
+            
         if(needPasswordChange){
             
             redirect(`/reset-password?email=${email}`);
