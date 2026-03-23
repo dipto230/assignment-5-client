@@ -12,7 +12,7 @@ export default function CommonLayout({
 }>) {
   return (
     <>
-      <Navbar/>
+      <Navbar
           {children}
       </>
   );
