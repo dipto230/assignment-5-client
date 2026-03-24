@@ -11,7 +11,9 @@ import {
 } from "react";
 import gsap from "gsap";
 
-
+/* =========================
+   🔥 TYPES + CONTEXT SAME
+========================= */
 
 type User = {
   id?: string;
@@ -54,7 +56,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-
+/* =========================
+   🔥 NAVBAR
+========================= */
 
 const NavbarContent = () => {
   const { user, setUser } = useAuth();
@@ -69,6 +73,7 @@ const NavbarContent = () => {
     return "U";
   };
 
+  /* 🔥 GSAP ENTRY ANIMATION */
   useEffect(() => {
     gsap.fromTo(
       navRef.current,
@@ -77,7 +82,7 @@ const NavbarContent = () => {
     );
   }, []);
 
-
+  /* 🔥 DROPDOWN ANIMATION */
   useEffect(() => {
     if (open) {
       gsap.fromTo(
@@ -88,7 +93,7 @@ const NavbarContent = () => {
     }
   }, [open]);
 
-
+  /* 🔥 SCROLL EFFECT */
   useEffect(() => {
     const handleScroll = () => {
       if (!navRef.current) return;
@@ -118,15 +123,15 @@ const NavbarContent = () => {
       ref={navRef}
       className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/70 border-b transition-all duration-300 px-8 py-4 flex justify-between items-center"
     >
-   
+      {/* 🔥 Logo */}
       <Link
         href="/"
         className="text-2xl font-bold tracking-wide hover:scale-105 transition"
       >
-        Law<span className="text-blue-600">Hive</span>
+        Law<span className="text-blue-600">Connect</span>
       </Link>
 
-    
+      {/* 🔥 Links */}
       <div className="hidden md:flex gap-10 text-sm font-medium">
         {["Consultation", "Legal Aid", "NGO"].map((item) => (
           <Link
@@ -140,7 +145,7 @@ const NavbarContent = () => {
         ))}
       </div>
 
-  
+      {/* 🔥 Avatar */}
       <div className="relative">
         {user ? (
           <>
@@ -213,7 +218,7 @@ const NavbarContent = () => {
   );
 };
 
-
+/* ========================= */
 
 export default function Navbar() {
   return (

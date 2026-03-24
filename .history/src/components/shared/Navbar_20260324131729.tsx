@@ -11,7 +11,9 @@ import {
 } from "react";
 import gsap from "gsap";
 
-
+/* =========================
+   🔥 TYPES + CONTEXT SAME
+========================= */
 
 type User = {
   id?: string;
@@ -54,7 +56,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-
+/* =========================
+   🔥 NAVBAR
+========================= */
 
 const NavbarContent = () => {
   const { user, setUser } = useAuth();
@@ -69,6 +73,7 @@ const NavbarContent = () => {
     return "U";
   };
 
+  /* 🔥 GSAP ENTRY ANIMATION */
   useEffect(() => {
     gsap.fromTo(
       navRef.current,
@@ -77,7 +82,7 @@ const NavbarContent = () => {
     );
   }, []);
 
-
+  /* 🔥 DROPDOWN ANIMATION */
   useEffect(() => {
     if (open) {
       gsap.fromTo(
@@ -88,7 +93,7 @@ const NavbarContent = () => {
     }
   }, [open]);
 
-
+  /* 🔥 SCROLL EFFECT */
   useEffect(() => {
     const handleScroll = () => {
       if (!navRef.current) return;
@@ -123,7 +128,7 @@ const NavbarContent = () => {
         href="/"
         className="text-2xl font-bold tracking-wide hover:scale-105 transition"
       >
-        Law<span className="text-blue-600">Hive</span>
+        Law<span className="text-blue-600">Connect</span>
       </Link>
 
     

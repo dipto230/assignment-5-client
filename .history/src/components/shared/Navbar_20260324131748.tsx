@@ -11,7 +11,9 @@ import {
 } from "react";
 import gsap from "gsap";
 
-
+/* =========================
+   🔥 TYPES + CONTEXT SAME
+========================= */
 
 type User = {
   id?: string;
@@ -54,7 +56,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-
+/* =========================
+   🔥 NAVBAR
+========================= */
 
 const NavbarContent = () => {
   const { user, setUser } = useAuth();

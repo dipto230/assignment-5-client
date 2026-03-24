@@ -11,7 +11,9 @@ import {
 } from "react";
 import gsap from "gsap";
 
-
+/* =========================
+   🔥 TYPES + CONTEXT SAME
+========================= */
 
 type User = {
   id?: string;
