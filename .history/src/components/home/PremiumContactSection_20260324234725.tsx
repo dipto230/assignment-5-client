@@ -11,37 +11,37 @@ export default function PremiumContactSection() {
     const el = sectionRef.current;
     if (!el) return;
 
-    // INITIAL STATES: hidden & slightly offset
-    gsap.set(".img", { scale: 1.15, opacity: 0 });
-    gsap.set(".fade", { y: 50, opacity: 0 });
+    // INITIAL STATES (hidden before animation)
+    gsap.set(".img", { scale: 1.1, opacity: 0 });
+    gsap.set(".fade", { y: 40, opacity: 0 });
 
     const tl = gsap.timeline();
 
-    // Image enters with smooth scale and fade
+    // Animate image first
     tl.to(".img", {
       scale: 1,
       opacity: 1,
-      duration: 1.5,
-      ease: "power4.out",
+      duration: 1.2,
+      ease: "power3.out",
     })
 
-    // Text and form fields appear with stagger and soft motion
+    // Animate text and form fields with stagger
     .to(
       ".fade",
       {
         y: 0,
         opacity: 1,
-        stagger: 0.2,
-        duration: 1.2,
-        ease: "power4.out",
+        stagger: 0.15,
+        duration: 1,
+        ease: "power3.out",
       },
-      "-=1.0" // overlap with image animation
+      "-=0.8"
     );
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 bg-[#f7f7f7]">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl">
+    <section ref={sectionRef} className="py-20 bg-[#f7f7f7]">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 rounded-2xl overflow-hidden shadow-lg">
         {/* LEFT IMAGE */}
         <div className="relative min-h-[500px] md:min-h-full">
           <Image
@@ -54,7 +54,7 @@ export default function PremiumContactSection() {
         </div>
 
         {/* RIGHT FORM */}
-        <div className="p-12 md:p-16">
+        <div className="p-10 md:p-16">
           <p className="fade text-sm tracking-[4px] text-[#b89b72] mb-3 uppercase">
             Contact Us
           </p>
@@ -63,7 +63,7 @@ export default function PremiumContactSection() {
             Request a Free Call Back
           </h2>
 
-          <form className="space-y-5">
+          <form className="space-y-4">
             <div className="flex gap-4">
               <input
                 type="text"
@@ -98,7 +98,7 @@ export default function PremiumContactSection() {
 
             <button
               type="submit"
-              className="fade bg-[#8b6b4a] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#6f5438] transition-all duration-300"
+              className="fade bg-[#8b6b4a] text-white px-8 py-4 rounded-md font-semibold hover:bg-[#6f5438] transition"
             >
               Submit
             </button>
