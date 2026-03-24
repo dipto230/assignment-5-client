@@ -150,7 +150,7 @@ const NavbarContent = () => {
 
 
       
-        {["Consultation", "Legal Aid", "NGO"].map((item) => (
+        {["About Us", "Legal Aid", "NGO"].map((item) => (
           <Link
             key={item}
             href={`/${item.toLowerCase().replace(" ", "-")}`}
