@@ -14,7 +14,7 @@ export default function CommonLayout({
   
       <Navbar />
       {children}
-      <FooterSection/>
+      <FooterSection
  </>
   );
 }

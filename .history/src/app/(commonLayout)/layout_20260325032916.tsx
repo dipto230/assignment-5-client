@@ -1,6 +1,5 @@
 "use client";
 
-import FooterSection from "@/components/home/FooterSection";
 import Navbar from "@/components/shared/Navbar";
 
 
@@ -14,7 +13,7 @@ export default function CommonLayout({
   
       <Navbar />
       {children}
-      <FooterSection/>
+      <Footer
  </>
   );
 }

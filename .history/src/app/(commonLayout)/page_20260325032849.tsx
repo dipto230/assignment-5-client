@@ -1,5 +1,4 @@
 import CorporateSection from "@/components/home/CorporateSection";
-import HeroFooter from "@/components/home/HeroFooter";
 import HeroSection from "@/components/home/HeroSection";
 import LawyerHighlight from "@/components/home/LawyerHighlight";
 import LogoSlider from "@/components/home/LogoSlider";
@@ -20,7 +19,7 @@ export default function Home() {
       <PremiumStatsSection />
       <PremiumContactSection />
       <LogoSlider />
-      <HeroFooter/>
+      <Hero
     </>
   );
 }
