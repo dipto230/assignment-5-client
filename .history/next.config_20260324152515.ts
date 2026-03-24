@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**", // allow all https domains
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com", // 👈 add this
       },
     ],
   },

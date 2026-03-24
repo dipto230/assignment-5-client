@@ -49,7 +49,7 @@ export default function ConsultationPage() {
     };
   }, [page, practice]);
 
-
+  // ✅ CHANGE PAGE (URL SYNC)
   const changePage = (newPage: number) => {
     router.push(`?page=${newPage}`);
   };

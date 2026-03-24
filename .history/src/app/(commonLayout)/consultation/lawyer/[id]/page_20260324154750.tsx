@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import gsap from "gsap";
 
 export default function LawyerDetails() {
@@ -24,33 +23,13 @@ export default function LawyerDetails() {
     const fetchData = async () => {
       try {
         const [lawyerRes, scheduleRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/v1/lawyers/${id}`, {
-            credentials: "include", // ✅ FIX
-          }),
+          fetch(`http://localhost:5000/api/v1/lawyers/${id}`),
           fetch(
-            `http://localhost:5000/api/v1/lawyer-schedules?lawyerId=${id}`,
-            {
-              credentials: "include", // ✅ FIX
-            }
+            `http://localhost:5000/api/v1/lawyer-schedules?lawyerId=${id}`
           ),
         ]);
 
-        // ✅ Lawyer safe parse
-        if (!lawyerRes.ok) {
-          const text = await lawyerRes.text();
-          console.error("Lawyer API error:", text);
-          return;
-        }
-
         const lawyerData = await lawyerRes.json();
-
-        // ✅ Schedule safe parse (FIX for '<!DOCTYPE')
-        if (!scheduleRes.ok) {
-          const text = await scheduleRes.text();
-          console.error("Schedule API error:", text);
-          return;
-        }
-
         const scheduleData = await scheduleRes.json();
 
         if (isMounted) {
@@ -82,7 +61,7 @@ export default function LawyerDetails() {
     }
   }, [lawyer]);
 
-  // ✅ BOOK
+  // ✅ BOOK APPOINTMENT (FIXED)
   const handleBook = async () => {
     if (!selected) {
       alert("Select a schedule");
@@ -98,8 +77,8 @@ export default function LawyerDetails() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            // Authorization: `Bearer ${token}` // যদি লাগে
           },
-          credentials: "include", // ✅ FIX
           body: JSON.stringify({
             lawyerId: id,
             scheduleId: selected,
@@ -107,17 +86,17 @@ export default function LawyerDetails() {
         }
       );
 
-      // ✅ Safe parse
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("Booking API error:", text);
-        throw new Error("Booking failed");
-      }
-
       const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data.message || "Booking failed");
+      }
+
       alert("Appointment booked successfully ✅");
+
+      // ✅ redirect
       router.push("/my-appointments");
+
     } catch (error: any) {
       alert(error.message);
     } finally {
@@ -151,17 +130,12 @@ export default function LawyerDetails() {
     >
       {/* LEFT */}
       <div className="flex flex-col items-start gap-5">
+        {/* Avatar */}
         {lawyer.profilePhoto ? (
-          <div className="relative w-28 h-28">
-            <Image
-              src={lawyer.profilePhoto}
-              alt={lawyer.name}
-              fill
-              className="rounded-full object-cover"
-              sizes="112px"
-              priority
-            />
-          </div>
+          <img
+            src={lawyer.profilePhoto}
+            className="w-28 h-28 rounded-full object-cover"
+          />
         ) : (
           <div className="w-28 h-28 flex items-center justify-center rounded-full bg-black text-white text-3xl font-semibold">
             {initial}
@@ -180,6 +154,7 @@ export default function LawyerDetails() {
           ৳ {lawyer.consultationFee}
         </p>
 
+        {/* BOOK BUTTON */}
         <button
           onClick={handleBook}
           disabled={bookingLoading}
@@ -191,14 +166,29 @@ export default function LawyerDetails() {
 
       {/* RIGHT */}
       <div className="md:col-span-2 space-y-10">
+        {/* INFO */}
         <div className="space-y-3 text-sm">
-          <p><span className="text-gray-400">Experience:</span> {lawyer.experience} years</p>
-          <p><span className="text-gray-400">Qualification:</span> {lawyer.qualification}</p>
-          <p><span className="text-gray-400">Gender:</span> {lawyer.gender}</p>
-          <p><span className="text-gray-400">Bar Reg:</span> {lawyer.barRegistrationNumber}</p>
-          <p><span className="text-gray-400">Email:</span> {lawyer.email}</p>
+          <p>
+            <span className="text-gray-400">Experience:</span>{" "}
+            {lawyer.experience} years
+          </p>
+          <p>
+            <span className="text-gray-400">Qualification:</span>{" "}
+            {lawyer.qualification}
+          </p>
+          <p>
+            <span className="text-gray-400">Gender:</span> {lawyer.gender}
+          </p>
+          <p>
+            <span className="text-gray-400">Bar Reg:</span>{" "}
+            {lawyer.barRegistrationNumber}
+          </p>
+          <p>
+            <span className="text-gray-400">Email:</span> {lawyer.email}
+          </p>
         </div>
 
+        {/* PRACTICE AREAS */}
         <div>
           <h3 className="text-sm text-gray-400 mb-2">Practice Areas</h3>
           <div className="flex gap-3 flex-wrap">
@@ -213,6 +203,7 @@ export default function LawyerDetails() {
           </div>
         </div>
 
+        {/* SCHEDULE */}
         <div>
           <h3 className="text-sm text-gray-400 mb-3">Select Schedule</h3>
 
@@ -221,25 +212,19 @@ export default function LawyerDetails() {
               <p className="text-gray-400">No schedule available</p>
             )}
 
-        {schedules.map((s) => {
-  console.log("Schedule:", s); 
-
-  return (
-    <button
-      key={s.id}
-      onClick={() => setSelected(s.scheduleId)}
-      className={`px-4 py-2 rounded-full text-sm border transition ${
-        selected === s.scheduleId
-          ? "bg-black text-white"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      {s.schedule?.startDateTime
-        ? new Date(s.schedule.startDateTime).toLocaleString()
-        : "No Date"}
-    </button>
-  );
-})}
+            {schedules.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelected(s.id)}
+                className={`px-4 py-2 rounded-full text-sm border transition ${
+                  selected === s.id
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                {new Date(s.startTime).toLocaleString()}
+              </button>
+            ))}
           </div>
         </div>
       </div>

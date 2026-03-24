@@ -221,25 +221,19 @@ export default function LawyerDetails() {
               <p className="text-gray-400">No schedule available</p>
             )}
 
-        {schedules.map((s) => {
-  console.log("Schedule:", s); 
-
-  return (
-    <button
-      key={s.id}
-      onClick={() => setSelected(s.scheduleId)}
-      className={`px-4 py-2 rounded-full text-sm border transition ${
-        selected === s.scheduleId
-          ? "bg-black text-white"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      {s.schedule?.startDateTime
-        ? new Date(s.schedule.startDateTime).toLocaleString()
-        : "No Date"}
-    </button>
-  );
-})}
+            {schedules.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelected(s.id)}
+                className={`px-4 py-2 rounded-full text-sm border transition ${
+                  selected === s.id
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                {new Date(s.startTime).toLocaleString()}
+              </button>
+            ))}
           </div>
         </div>
       </div>

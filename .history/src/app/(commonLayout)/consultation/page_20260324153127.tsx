@@ -9,7 +9,7 @@ export default function ConsultationPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [lawyers, setLawyers] = useState<any[]>([]);
+  const [lawyers, setLawyers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [practice, setPractice] = useState("");
@@ -17,39 +17,26 @@ export default function ConsultationPage() {
   const page = Number(searchParams.get("page")) || 1;
   const limit = 8;
 
-  // ✅ FETCH DATA (fixed)
+  const fetchLawyers = async () => {
+    setLoading(true);
+
+    const res = await fetch(
+      `http://localhost:5000/api/v1/lawyers?page=${page}&limit=${limit}&practice=${practice}`
+    );
+
+    const data = await res.json();
+
+    setLawyers(data?.data?.data || []);
+    setTotalPages(data?.data?.meta?.totalPages || 1);
+
+    setLoading(false);
+  };
+
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchLawyers = async () => {
-      setLoading(true);
-
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/v1/lawyers?page=${page}&limit=${limit}&practice=${practice}`
-        );
-
-        const data = await res.json();
-
-        if (isMounted) {
-          setLawyers(data?.data?.data || []);
-          setTotalPages(data?.data?.meta?.totalPages || 1);
-        }
-      } catch (error) {
-        console.error("Failed to fetch lawyers:", error);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
     fetchLawyers();
-
-    return () => {
-      isMounted = false;
-    };
   }, [page, practice]);
 
-
+  // change page (URL sync)
   const changePage = (newPage: number) => {
     router.push(`?page=${newPage}`);
   };
@@ -61,7 +48,7 @@ export default function ConsultationPage() {
         <div>
           <h1 className="text-3xl font-semibold">Find a Lawyer</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Browse experienced professionals
+            Browse and book consultation
           </p>
         </div>
 
@@ -91,7 +78,7 @@ export default function ConsultationPage() {
         <>
           {/* GRID */}
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {lawyers.map((lawyer) => {
+            {lawyers.map((lawyer: any) => {
               const initial = lawyer.name?.charAt(0).toUpperCase();
 
               return (
@@ -150,7 +137,6 @@ export default function ConsultationPage() {
 
           {/* PAGINATION */}
           <div className="flex justify-center items-center gap-2 mt-12">
-            {/* PREV */}
             <button
               onClick={() => changePage(page - 1)}
               disabled={page === 1}
@@ -159,7 +145,6 @@ export default function ConsultationPage() {
               Prev
             </button>
 
-            {/* PAGE NUMBERS */}
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i}
@@ -172,7 +157,6 @@ export default function ConsultationPage() {
               </button>
             ))}
 
-            {/* NEXT */}
             <button
               onClick={() => changePage(page + 1)}
               disabled={page === totalPages}
