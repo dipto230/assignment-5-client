@@ -25,13 +25,17 @@ export default function LawyerDetails() {
       try {
         const [lawyerRes, scheduleRes] = await Promise.all([
           fetch(`http://localhost:5000/api/v1/lawyers/${id}`, {
-            credentials: "include",
+            credentials: "include", // ✅ FIX
           }),
-          fetch(`http://localhost:5000/api/v1/lawyer-schedules?lawyerId=${id}`, {
-            credentials: "include",
-          }),
+          fetch(
+            `http://localhost:5000/api/v1/lawyer-schedules?lawyerId=${id}`,
+            {
+              credentials: "include", // ✅ FIX
+            }
+          ),
         ]);
 
+        // ✅ Lawyer safe parse
         if (!lawyerRes.ok) {
           const text = await lawyerRes.text();
           console.error("Lawyer API error:", text);
@@ -40,6 +44,7 @@ export default function LawyerDetails() {
 
         const lawyerData = await lawyerRes.json();
 
+        // ✅ Schedule safe parse (FIX for '<!DOCTYPE')
         if (!scheduleRes.ok) {
           const text = await scheduleRes.text();
           console.error("Schedule API error:", text);
@@ -94,7 +99,7 @@ export default function LawyerDetails() {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
+          credentials: "include", // ✅ FIX
           body: JSON.stringify({
             lawyerId: id,
             scheduleId: selected,
@@ -102,6 +107,7 @@ export default function LawyerDetails() {
         }
       );
 
+      // ✅ Safe parse
       if (!res.ok) {
         const text = await res.text();
         console.error("Booking API error:", text);
@@ -110,14 +116,8 @@ export default function LawyerDetails() {
 
       const data = await res.json();
 
-      // redirect to payment page
-     const paymentUrl = data.data.paymentUrl;
-      if (paymentUrl) {
-        window.location.href = paymentUrl; 
-      } else {
-        alert("Appointment booked successfully ✅");
-        router.push("/my-appointments");
-      }
+      alert("Appointment booked successfully ✅");
+      router.push("/my-appointments");
     } catch (error: any) {
       alert(error.message);
     } finally {
@@ -221,21 +221,25 @@ export default function LawyerDetails() {
               <p className="text-gray-400">No schedule available</p>
             )}
 
-            {schedules.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setSelected(s.scheduleId)}
-                className={`px-4 py-2 rounded-full text-sm border transition ${
-                  selected === s.scheduleId
-                    ? "bg-black text-white"
-                    : "hover:bg-gray-100"
-                }`}
-              >
-                {s.schedule?.startDateTime
-                  ? new Date(s.schedule.startDateTime).toLocaleString()
-                  : "No Date"}
-              </button>
-            ))}
+        {schedules.map((s) => {
+  console.log("Schedule:", s); 
+
+  return (
+    <button
+      key={s.id}
+      onClick={() => setSelected(s.scheduleId)}
+      className={`px-4 py-2 rounded-full text-sm border transition ${
+        selected === s.scheduleId
+          ? "bg-black text-white"
+          : "hover:bg-gray-100"
+      }`}
+    >
+      {s.schedule?.startDateTime
+        ? new Date(s.schedule.startDateTime).toLocaleString()
+        : "No Date"}
+    </button>
+  );
+})}
           </div>
         </div>
       </div>

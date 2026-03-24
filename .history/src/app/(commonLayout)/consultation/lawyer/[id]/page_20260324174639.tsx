@@ -111,7 +111,7 @@ export default function LawyerDetails() {
       const data = await res.json();
 
       // redirect to payment page
-     const paymentUrl = data.data.paymentUrl;
+      const paymentUrl = data.data.payment.paymentGatewayData?.paymentUrl;
       if (paymentUrl) {
         window.location.href = paymentUrl; 
       } else {
