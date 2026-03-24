@@ -125,7 +125,7 @@ const NavbarContent = () => {
        <div className="relative group">
   <span className="cursor-pointer relative">
     Services
-    <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
+    <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-600 transition-all group-hover:w-full"></span>
   </span>
 
 
@@ -157,7 +157,7 @@ const NavbarContent = () => {
             className="relative group"
           >
             {item}
-            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 w-0 h- bg-blue-600 transition-all group-hover:w-full"></span>
           </Link>
         ))}
 

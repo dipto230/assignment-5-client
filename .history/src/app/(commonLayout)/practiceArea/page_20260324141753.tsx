@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPracticeAreas } from "@/lib/getPracticeAreas";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function PracticeArea() {
@@ -32,13 +30,10 @@ export default async function PracticeArea() {
               {/* Icon or Initial */}
               <div className="mb-4">
                 {item.icon ? (
-                <Image
-  src={item.icon}
-  alt="service icon"
-  width={48}
-  height={48}
-  className="rounded-full object-cover"
-/>
+                  <img
+                    src={item.icon}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
                 ) : (
                   <div className="w-12 h-12 flex items-center justify-center rounded-full bg-linear-to-r from-blue-500 to-indigo-600 text-white font-bold">
                     {item.title.charAt(0)}

@@ -123,33 +123,26 @@ const NavbarContent = () => {
       {/* NAV LINKS */}
       <div className="hidden md:flex gap-10 text-sm font-medium items-center">
        <div className="relative group">
-  <span className="cursor-pointer relative">
-    Services
-    <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
-  </span>
-
-
-  <div className="absolute top-10 left-0 w-52 bg-white shadow-2xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border z-50">
-
-    {[
-      { name: "Practice Area", path: "/practiceArea" },
-      { name: "Consultation", path: "/consultation" },
-    ].map((item) => (
-      <Link
-        key={item.name}
-        href={item.path}
-        className="block px-5 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:pl-6 transition-all duration-200"
-      >
-        {item.name}
-      </Link>
-    ))}
-
-  </div>
-</div>
     
+    <span className="cursor-pointer relative group">
+      Services
+      <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-600 transition-all group-hover:w-full"></span>
+    </span>
 
+    {/* Dropdown */}
+    <div className="absolute top-8 left-0 w-44 bg-white shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300 border">
 
-      
+      <Link
+        href="/practiceArea"
+        className="block px-4 py-3 hover:bg-gray-100 text-sm"
+      >
+        Practice Area
+      </Link>
+
+    </div>
+  </div>
+
+        {/* OLD LINKS (UNCHANGED) */}
         {["Consultation", "Legal Aid", "NGO"].map((item) => (
           <Link
             key={item}
@@ -157,7 +150,7 @@ const NavbarContent = () => {
             className="relative group"
           >
             {item}
-            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-600 transition-all group-hover:w-full"></span>
           </Link>
         ))}
 
@@ -169,7 +162,7 @@ const NavbarContent = () => {
           <>
             <button
               onClick={() => setOpen(!open)}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-linear-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
             >
               {user?.image ? (
                 <Image
