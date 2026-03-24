@@ -18,7 +18,7 @@ export default function Home() {
       <LawyerHighlight />
       <PremiumStatsSection />
       <PremiumContactSection />
-      <LogoSlider/>
+      <LogoSlider
     </>
   );
 }
