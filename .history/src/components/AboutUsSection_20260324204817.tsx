@@ -15,42 +15,31 @@ export default function AboutUsSection() {
       defaults: { ease: "power3.out" },
     });
 
-    tl.from(
-      ".about-img",
-      {
-        x: -60,
-        opacity: 0,
-        duration: 1,
-        immediateRender: false,
-      }
-    ).from(
+    tl.from(".about-img", {
+      x: -80,
+      opacity: 0,
+      duration: 1.2,
+    }).from(
       ".about-content",
       {
-        y: 30,
+        y: 40,
         opacity: 0,
-        stagger: 0.12,
-        duration: 0.9,
-        immediateRender: false,
+        stagger: 0.15,
+        duration: 1,
       },
-      "-=0.7"
+      "-=0.8"
     );
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-28 bg-white">
+    <section
+      ref={sectionRef}
+      className="py-28 bg-white"
+    >
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center px-6">
 
         {/* LEFT IMAGE */}
-        <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-3xl about-img">
-          <Image
-            src="/images/about.jpg"
-            alt="About us"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
-            priority
-          />
-        </div>
+        v
 
         {/* RIGHT CONTENT */}
         <div>
@@ -62,19 +51,21 @@ export default function AboutUsSection() {
             A Legacy of Trust <br /> & Legal Excellence
           </h2>
 
-          <div className="about-content w-16 h-[2px] bg-[#b89b72] mb-8"></div>
+          <div className="about-content w-16 height: 2px bg-[#b89b72] mb-8"></div>
 
           <p className="about-content text-gray-600 mb-6 leading-relaxed text-lg">
             We are committed to delivering exceptional legal services with
-            precision, integrity, and dedication.
+            precision, integrity, and dedication. Our firm stands as a symbol
+            of trust, guiding clients through complex legal matters.
           </p>
 
           <p className="about-content text-gray-600 mb-10 leading-relaxed">
-            With years of experience, we ensure every case is handled with care
-            and professionalism.
+            With years of experience across multiple disciplines, we ensure
+            every case is handled with care, professionalism, and a strong
+            commitment to achieving the best results.
           </p>
 
-          {/* STATS */}
+          {/* SIMPLE STATS LINE */}
           <div className="about-content flex items-center gap-10 mb-10">
             <div>
               <h4 className="text-2xl font-semibold text-[#b89b72]">25+</h4>

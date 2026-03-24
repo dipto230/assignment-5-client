@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthProvider";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { useAuth } from "@/providers/AuthProvider";
 
 const Navbar = () => {
   const { user, setUser, loading } = useAuth();
@@ -18,11 +18,6 @@ const Navbar = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
     return "U";
   };
-
-  useEffect(() => {
-    console.log("🚀 NAVBAR USER:", user);
-    console.log("⏳ NAVBAR LOADING:", loading);
-  }, [user, loading]);
 
   useEffect(() => {
     gsap.fromTo(
@@ -45,12 +40,14 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!navRef.current) return;
+
       if (window.scrollY > 50) {
         navRef.current.classList.add("py-2", "shadow-lg");
       } else {
         navRef.current.classList.remove("py-2", "shadow-lg");
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -60,6 +57,7 @@ const Navbar = () => {
       method: "POST",
       credentials: "include",
     });
+
     setUser(null);
     window.location.href = "/";
   };
@@ -79,11 +77,13 @@ const Navbar = () => {
 
       {/* NAV LINKS */}
       <div className="hidden md:flex gap-10 text-sm font-medium items-center">
+        {/* SERVICES DROPDOWN */}
         <div className="relative group">
           <span className="cursor-pointer relative">
             Services
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
           </span>
+
           <div className="absolute top-10 left-0 w-52 bg-white shadow-2xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border z-50">
             {[
               { name: "Practice Area", path: "/practiceArea" },
@@ -100,6 +100,7 @@ const Navbar = () => {
           </div>
         </div>
 
+        {/* OTHER LINKS */}
         {["About Us", "Legal Aid", "NGO"].map((item) => (
           <Link
             key={item}
@@ -116,6 +117,7 @@ const Navbar = () => {
       <div className="relative">
         {loading ? null : user ? (
           <>
+            {/* USER */}
             <button
               onClick={() => setOpen(!open)}
               className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
@@ -133,6 +135,7 @@ const Navbar = () => {
               )}
             </button>
 
+            {/* DROPDOWN */}
             {open && (
               <div
                 ref={dropdownRef}
@@ -141,12 +144,21 @@ const Navbar = () => {
                 <div className="px-4 py-2 text-xs text-gray-500 border-b">
                   {user.role}
                 </div>
-                <Link href="/dashboard" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/dashboard"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   Dashboard
                 </Link>
-                <Link href="/my-profile" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/my-profile"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   My Profile
                 </Link>
+
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-100"
@@ -157,12 +169,14 @@ const Navbar = () => {
             )}
           </>
         ) : (
+          /* 🔥 USER না থাকলে */
           <div className="flex gap-4">
             <Link href="/login">
               <button className="px-4 py-1.5 border rounded hover:bg-gray-100">
                 Login
               </button>
             </Link>
+
             <Link href="/register">
               <button className="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Register

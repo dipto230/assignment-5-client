@@ -2,12 +2,67 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import gsap from "gsap";
-import { useAuth } from "@/providers/AuthProvider";
 
-const Navbar = () => {
-  const { user, setUser, loading } = useAuth();
+type User = {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: "ADMIN" | "SUPER_ADMIN" | "LAWYER" | "USER";
+  image?: string;
+  client?: {
+    contactNumber?: string;
+    address?: string;
+
+    appointments?: any[];
+    legalDocuments?: any[];
+    consultationNotes?: any[];
+    profile?: any;
+  };
+};
+
+type AuthContextType = {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  loading: boolean;
+};
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+  loading: true,
+});
+
+export const useAuth = () => useContext(AuthContext);
+
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/v1/auth/me", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((json) => setUser(json?.data))
+      .catch(() => setUser(null));
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, loading: false }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+const NavbarContent = () => {
+  const { user, setUser } = useAuth();
   const [open, setOpen] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
@@ -18,11 +73,6 @@ const Navbar = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
     return "U";
   };
-
-  useEffect(() => {
-    console.log("🚀 NAVBAR USER:", user);
-    console.log("⏳ NAVBAR LOADING:", loading);
-  }, [user, loading]);
 
   useEffect(() => {
     gsap.fromTo(
@@ -45,12 +95,14 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!navRef.current) return;
+
       if (window.scrollY > 50) {
         navRef.current.classList.add("py-2", "shadow-lg");
       } else {
         navRef.current.classList.remove("py-2", "shadow-lg");
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -79,27 +131,34 @@ const Navbar = () => {
 
       {/* NAV LINKS */}
       <div className="hidden md:flex gap-10 text-sm font-medium items-center">
-        <div className="relative group">
-          <span className="cursor-pointer relative">
-            Services
-            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
-          </span>
-          <div className="absolute top-10 left-0 w-52 bg-white shadow-2xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border z-50">
-            {[
-              { name: "Practice Area", path: "/practiceArea" },
-              { name: "Consultation", path: "/consultation" },
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className="block px-5 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:pl-6 transition-all duration-200"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-        </div>
+       <div className="relative group">
+  <span className="cursor-pointer relative">
+    Services
+    <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
+  </span>
 
+
+  <div className="absolute top-10 left-0 w-52 bg-white shadow-2xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border z-50">
+
+    {[
+      { name: "Practice Area", path: "/practiceArea" },
+      { name: "Consultation", path: "/consultation" },
+    ].map((item) => (
+      <Link
+        key={item.name}
+        href={item.path}
+        className="block px-5 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:pl-6 transition-all duration-200"
+      >
+        {item.name}
+      </Link>
+    ))}
+
+  </div>
+</div>
+    
+
+
+      
         {["About Us", "Legal Aid", "NGO"].map((item) => (
           <Link
             key={item}
@@ -110,15 +169,16 @@ const Navbar = () => {
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
           </Link>
         ))}
+
       </div>
 
       {/* RIGHT SIDE */}
       <div className="relative">
-        {loading ? null : user ? (
+        {user ? (
           <>
             <button
               onClick={() => setOpen(!open)}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-linear-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
             >
               {user?.image ? (
                 <Image
@@ -141,12 +201,21 @@ const Navbar = () => {
                 <div className="px-4 py-2 text-xs text-gray-500 border-b">
                   {user.role}
                 </div>
-                <Link href="/dashboard" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/dashboard"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   Dashboard
                 </Link>
-                <Link href="/my-profile" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/my-profile"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   My Profile
                 </Link>
+
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-100"
@@ -163,6 +232,7 @@ const Navbar = () => {
                 Login
               </button>
             </Link>
+
             <Link href="/register">
               <button className="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Register
@@ -175,4 +245,10 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default function Navbar() {
+  return (
+    <AuthProvider>
+      <NavbarContent />
+    </AuthProvider>
+  );
+}

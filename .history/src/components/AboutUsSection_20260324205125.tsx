@@ -15,24 +15,19 @@ export default function AboutUsSection() {
       defaults: { ease: "power3.out" },
     });
 
-    tl.from(
-      ".about-img",
-      {
-        x: -60,
-        opacity: 0,
-        duration: 1,
-        immediateRender: false,
-      }
-    ).from(
+    tl.from(".about-img", {
+      x: -80,
+      opacity: 0,
+      duration: 1.2,
+    }).from(
       ".about-content",
       {
-        y: 30,
+        y: 40,
         opacity: 0,
-        stagger: 0.12,
-        duration: 0.9,
-        immediateRender: false,
+        stagger: 0.15,
+        duration: 1,
       },
-      "-=0.7"
+      "-=0.8"
     );
   }, []);
 
@@ -92,7 +87,6 @@ export default function AboutUsSection() {
             </div>
           </div>
 
-          {/* BUTTON */}
           <button className="about-content border border-[#b89b72] text-[#b89b72] px-10 py-4 rounded-full font-semibold hover:bg-[#b89b72] hover:text-white transition duration-300">
             Learn More
           </button>

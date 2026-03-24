@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,7 @@ type FormValues = {
 };
 
 export default function MyProfilePage() {
-  const { user, setUser } = useAuth(); // 🔥 IMPORTANT
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -32,79 +31,47 @@ export default function MyProfilePage() {
     },
   });
 
-  // 🔥 Prefill user data
+  // 🔥 Prefill fix
   useEffect(() => {
     if (user) {
       form.reset({
         name: user.name || "",
         contactNumber: user.contactNumber || "",
         address: user.address || "",
-        occupation: user.occupation || "",
-        companyName: user.companyName || "",
-        dateOfBirth: user.dateOfBirth || "",
       });
     }
-  }, [user, form]);
+  }, [user]);
 
   const onSubmit = async (data: FormValues) => {
-    setLoading(true);
+    const payload = {
+      clientInfo: {
+        name: data.name,
+        contactNumber: data.contactNumber,
+        address: data.address,
+      },
+      clientProfile: {
+        occupation: data.occupation,
+        companyName: data.companyName,
+        dateOfBirth: data.dateOfBirth,
+      },
+    };
 
-    try {
-      const payload = {
-        clientInfo: {
-          name: data.name,
-          contactNumber: data.contactNumber,
-          address: data.address,
-        },
-        clientProfile: {
-          occupation: data.occupation,
-          companyName: data.companyName,
-          dateOfBirth: data.dateOfBirth,
-        },
-      };
+    console.log("🔥 FINAL PAYLOAD:", payload);
 
-      console.log("🔥 FINAL PAYLOAD:", payload);
-
-      const res = await fetch(
-        "http://localhost:5000/api/v1/clients/update-my-profile",
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      console.log("🔥 STATUS:", res.status);
-
-      const result = await res.json();
-      console.log("🔥 RESPONSE:", result);
-
-      if (!res.ok) {
-        alert(result.message || "Update failed ❌");
-        return;
-      }
-
-      // 🔥 UPDATE UI INSTANTLY
-      if (result?.data) {
-        setUser(result.data);
-      }
-
-      alert("✅ Profile updated successfully");
-    } catch (error) {
-      console.error("❌ ERROR:", error);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    await fetch("http://localhost:5000/api/v1/clients/update-my-profile", {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
   };
 
   return (
     <div className="p-6">
       <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-        
+
         {/* 🔥 LEFT: PROFILE INFO */}
         <div className="bg-white rounded-2xl shadow p-6 space-y-3 h-fit">
           <h2 className="text-2xl font-bold mb-4">My Profile</h2>
@@ -152,8 +119,8 @@ export default function MyProfilePage() {
               <Input type="date" {...form.register("dateOfBirth")} />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Updating..." : "Update Profile"}
+            <Button type="submit" className="w-full">
+              Update Profile
             </Button>
           </form>
         </div>

@@ -14,10 +14,9 @@ export default function NGOPage() {
     gsap.to(".fade", {
       y: 0,
       opacity: 1,
-      stagger: 0.12,
-      duration: 0.9,
+      stagger: 0.15,
+      duration: 1,
       ease: "power3.out",
-      delay: 0.2,
     });
   }, []);
 
@@ -44,41 +43,28 @@ export default function NGOPage() {
         </button>
       </section>
 
-      {/* PREMIUM IMAGE + TEXT SECTION */}
-      <section className="py-28 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      {/* IMAGE */}
+      <section className="relative h-[500px] mx-6 rounded-3xl overflow-hidden">
+        <Image
+          src="/images/scale.jpg"
+          alt="NGO"
+          fill
+          priority
+          className="object-cover"
+        />
+      </section>
 
-          {/* LEFT BIG IMAGE */}
-          <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden rounded-3xl">
-            <Image
-              src="/images/scale.jpg"
-              alt="NGO"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover transition duration-700 hover:scale-105"
-              priority
-            />
-          </div>
+      {/* ABOUT */}
+      <section className="py-28 px-6 max-w-5xl mx-auto text-center">
+        <h2 className="fade opacity-0 translate-y-10 text-3xl md:text-4xl font-serif mb-6">
+          Who We Are
+        </h2>
 
-          {/* RIGHT TEXT */}
-          <div>
-            <h2 className="fade opacity-0 translate-y-10 text-3xl md:text-4xl font-serif mb-6">
-              Standing for Justice
-            </h2>
-
-            <p className="fade opacity-0 translate-y-10 text-gray-600 leading-relaxed text-lg mb-6">
-              We believe that justice should be accessible to everyone. Our NGO
-              works tirelessly to provide legal support and protect the rights
-              of those who need it most.
-            </p>
-
-            <p className="fade opacity-0 translate-y-10 text-gray-600 leading-relaxed">
-              Through awareness, legal aid, and community programs, we empower
-              individuals to stand for their rights and build a fair society.
-            </p>
-          </div>
-
-        </div>
+        <p className="fade opacity-0 translate-y-10 text-gray-600 leading-relaxed text-lg">
+          Our organization is dedicated to providing legal aid, raising awareness,
+          and protecting the rights of vulnerable communities. We believe justice
+          should never depend on wealth or status.
+        </p>
       </section>
 
       {/* IMPACT */}

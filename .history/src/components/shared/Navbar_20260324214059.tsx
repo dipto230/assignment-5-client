@@ -2,12 +2,82 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import gsap from "gsap";
-import { useAuth } from "@/providers/AuthProvider";
 
-const Navbar = () => {
-  const { user, setUser, loading } = useAuth();
+/* ================= TYPES ================= */
+
+type User = {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: "ADMIN" | "SUPER_ADMIN" | "LAWYER" | "USER";
+  image?: string;
+  client?: {
+    contactNumber?: string;
+    address?: string;
+    appointments?: unknown[];
+    legalDocuments?: unknown[];
+    consultationNotes?: unknown[];
+    profile?: unknown;
+  };
+};
+
+type AuthContextType = {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  loading: boolean;
+};
+
+/* ================= CONTEXT ================= */
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+  loading: true,
+});
+
+export const useAuth = () => useContext(AuthContext);
+
+/* ================= PROVIDER ================= */
+
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // ✅ FIX
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/v1/auth/me", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log("API RESPONSE 👉", json); 
+        console.log("SETTING USER 👉", json?.data);
+        setUser(json?.data);
+      })
+      .catch(() =>
+        
+        setUser(null))
+      .finally(() => setLoading(false)); // ✅ FIX
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+/* ================= NAVBAR ================= */
+
+const NavbarContent = () => {
+  const { user, setUser, loading } = useAuth(); // ✅ loading use করলাম
   const [open, setOpen] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
@@ -18,11 +88,6 @@ const Navbar = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
     return "U";
   };
-
-  useEffect(() => {
-    console.log("🚀 NAVBAR USER:", user);
-    console.log("⏳ NAVBAR LOADING:", loading);
-  }, [user, loading]);
 
   useEffect(() => {
     gsap.fromTo(
@@ -45,12 +110,14 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!navRef.current) return;
+
       if (window.scrollY > 50) {
         navRef.current.classList.add("py-2", "shadow-lg");
       } else {
         navRef.current.classList.remove("py-2", "shadow-lg");
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -84,6 +151,7 @@ const Navbar = () => {
             Services
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
           </span>
+
           <div className="absolute top-10 left-0 w-52 bg-white shadow-2xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border z-50">
             {[
               { name: "Practice Area", path: "/practiceArea" },
@@ -114,11 +182,13 @@ const Navbar = () => {
 
       {/* RIGHT SIDE */}
       <div className="relative">
-        {loading ? null : user ? (
+        {loading ? (
+          <p className="text-sm text-gray-500">Loading...</p> // ✅ FIX
+        ) : user ? (
           <>
             <button
               onClick={() => setOpen(!open)}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-linear-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-110 transition"
             >
               {user?.image ? (
                 <Image
@@ -141,12 +211,21 @@ const Navbar = () => {
                 <div className="px-4 py-2 text-xs text-gray-500 border-b">
                   {user.role}
                 </div>
-                <Link href="/dashboard" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/dashboard"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   Dashboard
                 </Link>
-                <Link href="/my-profile" className="block px-4 py-3 hover:bg-gray-100">
+
+                <Link
+                  href="/my-profile"
+                  className="block px-4 py-3 hover:bg-gray-100"
+                >
                   My Profile
                 </Link>
+
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-100"
@@ -163,6 +242,7 @@ const Navbar = () => {
                 Login
               </button>
             </Link>
+
             <Link href="/register">
               <button className="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Register
@@ -175,4 +255,12 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+/* ================= EXPORT ================= */
+
+export default function Navbar() {
+  return (
+    <AuthProvider>
+      <NavbarContent />
+    </AuthProvider>
+  );
+}
