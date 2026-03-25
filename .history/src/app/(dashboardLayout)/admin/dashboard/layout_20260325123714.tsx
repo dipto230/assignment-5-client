@@ -3,11 +3,7 @@
 import AdminSidebar from "@/components/AdminSidebar";
 import { useAuth } from "@/providers/AuthProvider";
 
-export default function AdminDashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminDashboardLayout({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
@@ -15,11 +11,15 @@ export default function AdminDashboardLayout({
 
   return (
     <div className="flex min-h-screen">
+      {/* Sidebar */}
       <div className="w-64 bg-gray-100 border-r">
         <AdminSidebar />
       </div>
 
-      <div className="flex-1 p-6">{children}</div>
+      {/* Content */}
+      <div className="flex-1 p-6">
+        {children}
+      </div>
     </div>
   );
 }
