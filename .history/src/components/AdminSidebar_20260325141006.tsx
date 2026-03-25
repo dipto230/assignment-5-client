@@ -9,7 +9,7 @@ const menu = [
     { label: "Lawyers", href: "/admin/dashboard/lawyers" },
     { label: "Create Lawyer", href: "/admin/dashboard/lawyers/create" }, 
   { label: "Practice Areas", href: "/admin/dashboard/practice-areas" },
-  { label: "Schedules", href: "/admin/dashboard/schedules-managment" },
+  { label: "Schedules", href: "/admin/dashboard/schedules-mana" },
   { label: "Clients", href: "/admin/dashboard/clients" },
   { label: "Appointments", href: "/admin/dashboard/appointments" },
   { label: "Payments", href: "/admin/dashboard/payments" },

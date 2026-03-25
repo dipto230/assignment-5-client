@@ -31,7 +31,7 @@ export default function ScheduleManagement() {
   const createMutation = useMutation({
     mutationFn: () => scheduleService.create(newSchedule),
     onSuccess: () => {
-      queryClient.invalidateQueries("schedules");
+      queryClient.invalidateQueries(schedules);
       setNewSchedule({ startDateTime: "", endDateTime: "" });
     },
   });
@@ -39,7 +39,7 @@ export default function ScheduleManagement() {
   // Delete schedule
   const deleteMutation = useMutation({
     mutationFn: (id: string) => scheduleService.delete(id),
-    onSuccess: () => queryClient.invalidateQueries("schedules"),
+    onSuccess: () => queryClient.invalidateQueries(schedules),
   });
 
   if (isLoading) return <div className="p-8">Loading schedules...</div>;

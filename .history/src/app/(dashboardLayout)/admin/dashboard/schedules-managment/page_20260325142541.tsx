@@ -31,7 +31,7 @@ export default function ScheduleManagement() {
   const createMutation = useMutation({
     mutationFn: () => scheduleService.create(newSchedule),
     onSuccess: () => {
-      queryClient.invalidateQueries("schedules");
+      queryClient.invalidateQueries(schedules);
       setNewSchedule({ startDateTime: "", endDateTime: "" });
     },
   });
