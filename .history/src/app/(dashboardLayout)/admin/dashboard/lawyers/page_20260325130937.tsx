@@ -2,12 +2,8 @@
 
 import { useState } from "react";
 import { useLawyers } from "@/hooks/useLawyers";
-import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/apiClient";
 
 export default function Page() {
-  const router = useRouter();
-
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -25,7 +21,6 @@ export default function Page() {
 
   return (
     <div className="p-8 bg-white min-h-screen">
-      
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Lawyers</h1>
@@ -49,7 +44,6 @@ export default function Page() {
               <th className="p-3">Email</th>
               <th className="p-3">Fee</th>
               <th className="p-3">Experience</th>
-              <th className="p-3 text-right">Actions</th> {/* 🔥 ADD */}
             </tr>
           </thead>
 
@@ -63,31 +57,6 @@ export default function Page() {
                 <td className="p-3">{lawyer.user?.email}</td>
                 <td className="p-3">{lawyer.consultationFee}</td>
                 <td className="p-3">{lawyer.experience} yrs</td>
-
-                {/* 🔥 ACTION BUTTONS */}
-                <td className="p-3 text-right space-x-3">
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/lawyers/${lawyer.id}/edit`)
-                    }
-                    className="text-blue-600 hover:underline"
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={async () => {
-                      const confirmDelete = confirm("Delete this lawyer?");
-                      if (!confirmDelete) return;
-
-                      await apiClient.delete(`/api/v1/lawyers/${lawyer.id}`);
-                      window.location.reload();
-                    }}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
