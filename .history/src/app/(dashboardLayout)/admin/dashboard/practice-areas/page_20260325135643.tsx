@@ -8,20 +8,18 @@ import { practiceService } from "@/services/practice.service";
 export default function PracticeAdminPage() {
   const queryClient = useQueryClient();
 
+  // Form state
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newIcon, setNewIcon] = useState<File | null>(null);
 
-  // Fetch all practice areas and transform to array
-  const { data: practiceAreas, isLoading } = useQuery({
+  // Fetch all practice areas
+  const { data, isLoading } = useQuery({
     queryKey: ["practiceAreas"],
-    queryFn: async () => {
-      const res = await practiceService.getAll();
-      // return only the array
-      return res.data.data;
-    },
+    queryFn: practiceService.getAll,
   });
 
+  // Create mutation
   const createMutation = useMutation({
     mutationFn: () =>
       practiceService.create({
@@ -37,13 +35,17 @@ export default function PracticeAdminPage() {
     },
   });
 
+  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => practiceService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["practiceAreas"] }),
   });
 
+  // Handle file change
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) setNewIcon(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) {
+      setNewIcon(e.target.files[0]);
+    }
   };
 
   if (isLoading) return <div className="p-8">Loading...</div>;
@@ -82,7 +84,7 @@ export default function PracticeAdminPage() {
 
       {/* List of Practice Areas */}
       <div className="grid grid-cols-1 gap-4">
-        {practiceAreas?.map((area: any) => (
+        {data?.data.map((area: any) => (
           <div
             key={area.id}
             className="flex items-center justify-between border p-4 rounded"
