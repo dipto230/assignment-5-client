@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
- 
+import { signOut } from "@/providers/AuthProvider"; // optional, your logout function
 
 const menu = [
   { label: "Dashboard", href: "/admin/dashboard" },
