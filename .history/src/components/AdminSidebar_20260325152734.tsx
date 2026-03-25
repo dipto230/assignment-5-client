@@ -12,8 +12,8 @@ const menu = [
   { label: "Schedules", href: "/admin/dashboard/schedules-managment" },
 
   { label: "Appointments", href: "/admin/dashboard/appointments" },
-  { label: "Payments", href: "/admin/dashboard/payment-managment" },
-
+  { label: "Payments", href: "/admin/dashboard/payments" },
+  { label: "Reviews", href: "/admin/dashboard/reviews" },
 ];
 
 export default function AdminSidebar() {

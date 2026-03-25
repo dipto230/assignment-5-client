@@ -13,7 +13,7 @@ const menu = [
 
   { label: "Appointments", href: "/admin/dashboard/appointments" },
   { label: "Payments", href: "/admin/dashboard/payment-managment" },
-
+  { label: "Reviews", href: "/admin/dashboard/reviews" },
 ];
 
 export default function AdminSidebar() {

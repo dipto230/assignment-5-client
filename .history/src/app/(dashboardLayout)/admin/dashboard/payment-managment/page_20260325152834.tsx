@@ -1,34 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { paymentService } from "@/services/payment.service";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@/lib/apiClient"; // axios instance
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
   TableHeader,
+  TableBody,
+  TableHead,
   TableRow,
+  TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
+// Fetch payments function
+const fetchPayments = async (page = 1, limit = 10) => {
+  const res = await apiClient.get(`/api/v1/payments?page=${page}&limit=${limit}`);
+  return res.data;
+};
+
 export default function AdminPayments() {
-  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  // Fetch paginated payments
   const { data, isLoading } = useQuery({
     queryKey: ["payments", page],
-    queryFn: () => paymentService.getAll(page, limit),
+    queryFn: () => fetchPayments(page, limit),
     keepPreviousData: true,
-  });
-
-  // Optional: delete payment mutation
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => paymentService.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(["payments"]),
   });
 
   if (isLoading) return <div className="p-8">Loading payments...</div>;
@@ -37,44 +35,33 @@ export default function AdminPayments() {
     <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Admin Payments</h1>
 
-      {data?.data.length > 0 ? (
+      {data?.data?.length > 0 ? (
         <>
-          {/* Table */}
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
+                <TableHead>Payment ID</TableHead>
                 <TableHead>Appointment ID</TableHead>
+                <TableHead>Client</TableHead>
+                <TableHead>Lawyer</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Transaction ID</TableHead>
+                <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.data.map((p: any) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.id}</TableCell>
-                  <TableCell>{p.appointmentId}</TableCell>
+                  <TableCell>{p.appointment.id}</TableCell>
+                  <TableCell>{p.appointment.client?.name || "-"}</TableCell>
+                  <TableCell>{p.appointment.lawyer?.name || "-"}</TableCell>
                   <TableCell>₹{p.amount}</TableCell>
-                  <TableCell>
-                    {p.status === "PAID" ? (
-                      <span className="text-green-600 font-semibold">{p.status}</span>
-                    ) : (
-                      <span className="text-red-600 font-semibold">{p.status}</span>
-                    )}
-                  </TableCell>
+                  <TableCell>{p.status}</TableCell>
+                  <TableCell>{p.transactionId}</TableCell>
                   <TableCell>
                     {new Date(p.createdAt).toLocaleString()}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteMutation.mutate(p.id)}
-                    >
-                      Delete
-                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
