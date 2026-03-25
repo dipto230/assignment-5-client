@@ -7,17 +7,16 @@ import { useAuth } from "@/providers/AuthProvider";
 export default function LawyerDashboardPage() {
   const { user, loading, logout } = useAuth();
 
-  // Fetch lawyer stats
-  const { data, isLoading: queryLoading, isError, refetch } = useQuery({
+  const { data, isLoading: queryLoading } = useQuery({
     queryKey: ["lawyerStats", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const res = await apiClient.get("/api/v1/stats/lawyer"); // ✅ Correct backend route
-      return res.data.data; // backend returns { data: {...} }
+      const res = await apiClient.get("/api/v1/lawyer/stats");
+      return res.data;
     },
   });
 
-  const stats = data;
+  const stats = data?.data;
 
   if (loading)
     return <div className="p-6 text-gray-500">Auth Loading...</div>;
@@ -25,18 +24,6 @@ export default function LawyerDashboardPage() {
     return <div className="p-6 text-red-500">No User ❌</div>;
   if (queryLoading)
     return <div className="p-6 text-gray-500">Stats Loading...</div>;
-  if (isError)
-    return (
-      <div className="p-6 text-red-500">
-        Error loading stats.
-        <button
-          onClick={() => refetch()}
-          className="ml-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Retry
-        </button>
-      </div>
-    );
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-gray-900 px-10 py-10 relative">
@@ -64,8 +51,8 @@ export default function LawyerDashboardPage() {
         {[
           { label: "Total Appointments", value: stats?.totalAppointments },
           { label: "My Consultation Notes", value: stats?.totalConsultationNotes },
-          { label: "Upcoming Schedule", value: stats?.upcomingSchedules ?? 0 },
-          { label: "Total Reviews", value: stats?.totalReviews ?? 0 },
+          { label: "Upcoming Schedule", value: stats?.upcomingSchedules },
+          { label: "Total Reviews", value: stats?.totalReviews },
         ].map((item, i) => (
           <div
             key={i}
@@ -100,8 +87,8 @@ export default function LawyerDashboardPage() {
           <div className="space-y-2 text-sm text-gray-600">
             <p>{stats?.totalAppointments} appointments scheduled</p>
             <p>{stats?.totalConsultationNotes} consultation notes</p>
-            <p>{stats?.upcomingSchedules ?? 0} upcoming schedules</p>
-            <p>{stats?.totalReviews ?? 0} total reviews</p>
+            <p>{stats?.upcomingSchedules} upcoming schedules</p>
+            <p>{stats?.totalReviews} total reviews</p>
           </div>
         </div>
 

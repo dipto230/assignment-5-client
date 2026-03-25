@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/apiClient"; // <- use your axios instance
+import axios from "axios";
 
 interface Review {
   id: string;
   appointmentId: string;
   rating: number;
   comment: string;
-  lawyer: { id: string; user: { name: string } };
-  client: { id: string; user: { name: string } };
+  lawyer: {
+    id: string;
+    user: { name: string };
+  };
+  client: {
+    id: string;
+    user: { name: string };
+  };
 }
 
 interface NewReview {
@@ -19,8 +25,21 @@ interface NewReview {
   comment: string;
 }
 
+const fetchMyReviews = async (): Promise<Review[]> => {
+  const { data } = await axios.get("/api/v1/reviews/my-reviews");
+  return data.data;
+};
+
 export default function ReviewsPage() {
   const queryClient = useQueryClient();
+
+  // --- Queries ---
+  const { data: reviews = [], isLoading } = useQuery({
+    queryKey: ["myReviews"],
+    queryFn: fetchMyReviews,
+  });
+
+  // --- State ---
   const [newReview, setNewReview] = useState<NewReview>({
     appointmentId: "",
     rating: 1,
@@ -28,29 +47,20 @@ export default function ReviewsPage() {
   });
   const [editReviewId, setEditReviewId] = useState<string | null>(null);
 
-  // --- Queries ---
-  const { data: reviews = [], isLoading } = useQuery({
-    queryKey: ["myReviews"],
-    queryFn: async () => {
-      const { data } = await apiClient.get("/api/v1/reviews/my-reviews");
-      return data.data;
-    },
-  });
-
   // --- Mutations ---
   const createReviewMutation = useMutation({
-    mutationFn: (payload: NewReview) => apiClient.post("/api/v1/reviews", payload),
+    mutationFn: (payload: NewReview) => axios.post("/api/v1/reviews", payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["myReviews"] }),
   });
 
   const updateReviewMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<NewReview> }) =>
-      apiClient.patch(`/api/v1/reviews/${id}`, data),
+    mutationFn: (payload: { id: string; data: Partial<NewReview> }) =>
+      axios.patch(`/api/v1/reviews/${payload.id}`, payload.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["myReviews"] }),
   });
 
   const deleteReviewMutation = useMutation({
-    mutationFn: (id: string) => apiClient.delete(`/api/v1/reviews/${id}`),
+    mutationFn: (id: string) => axios.delete(`/api/v1/reviews/${id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["myReviews"] }),
   });
 
@@ -75,8 +85,11 @@ export default function ReviewsPage() {
     });
   };
 
-  const handleDelete = (id: string) => deleteReviewMutation.mutate(id);
+  const handleDelete = (id: string) => {
+    deleteReviewMutation.mutate(id);
+  };
 
+  // --- Render ---
   if (isLoading) return <div>Loading reviews...</div>;
 
   return (
@@ -84,15 +97,13 @@ export default function ReviewsPage() {
       <h1 className="text-xl font-bold mb-4">My Reviews</h1>
 
       {/* Review Form */}
-      <form onSubmit={handleSubmit} className="mb-6 flex gap-2 flex-wrap">
+      <form onSubmit={handleSubmit} className="mb-6">
         <input
           type="text"
           placeholder="Appointment ID"
           value={newReview.appointmentId}
-          onChange={(e) =>
-            setNewReview({ ...newReview, appointmentId: e.target.value })
-          }
-          className="border p-2"
+          onChange={(e) => setNewReview({ ...newReview, appointmentId: e.target.value })}
+          className="border p-2 mr-2"
           required
         />
         <input
@@ -100,26 +111,19 @@ export default function ReviewsPage() {
           min={1}
           max={5}
           value={newReview.rating}
-          onChange={(e) =>
-            setNewReview({ ...newReview, rating: +e.target.value })
-          }
-          className="border p-2 w-20"
+          onChange={(e) => setNewReview({ ...newReview, rating: +e.target.value })}
+          className="border p-2 mr-2 w-20"
           required
         />
         <input
           type="text"
           placeholder="Comment"
           value={newReview.comment}
-          onChange={(e) =>
-            setNewReview({ ...newReview, comment: e.target.value })
-          }
-          className="border p-2 flex-1"
+          onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+          className="border p-2 mr-2"
           required
         />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
           {editReviewId ? "Update Review" : "Create Review"}
         </button>
       </form>
@@ -140,7 +144,7 @@ export default function ReviewsPage() {
               <td className="border p-2">{review.appointmentId}</td>
               <td className="border p-2">{review.rating}</td>
               <td className="border p-2">{review.comment}</td>
-              <td className="border p-2 flex gap-2">
+              <td className="border p-2 space-x-2">
                 <button
                   className="bg-yellow-400 text-white px-2 py-1 rounded"
                   onClick={() => handleEdit(review)}

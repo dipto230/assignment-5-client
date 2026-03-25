@@ -12,8 +12,8 @@ export default function LawyerDashboardPage() {
     queryKey: ["lawyerStats", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const res = await apiClient.get("/api/v1/stats/lawyer"); // ✅ Correct backend route
-      return res.data.data; // backend returns { data: {...} }
+      const res = await apiClient.get("/stats/lawyer"); // Updated URL
+      return res.data.data; // assuming backend returns { data: {...} }
     },
   });
 

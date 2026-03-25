@@ -28,7 +28,7 @@ export default function AppointmentPage() {
     queryKey: ["appointments", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const res = await apiClient.get("/api/v1/appointments/my-appointments");
+      const res = await apiClient.get("/appointments/my-appointments");
       return res.data.data; // backend returns { data: [...] }
     },
   });
