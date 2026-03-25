@@ -28,7 +28,7 @@ export default function GlobalLoading() {
         Loading
       </h1>
 
-    
+      {/* Minimal dots */}
       <div ref={dotsRef} className="flex space-x-2">
         <span className="w-3 h-3 bg-gray-800 rounded-full"></span>
         <span className="w-3 h-3 bg-gray-800 rounded-full"></span>

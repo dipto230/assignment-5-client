@@ -9,8 +9,7 @@ const LoginPage = async ({ searchParams }: LoginParams) => {
   const redirectPath = params.redirect;
   return (
     <div className="min-h-screen flex justify-start items-center bg-gray-50 pt-24">
-      <LoginForm redirectPath={redirectPath} />
-      </div>
+    <LoginForm redirectPath={redirectPath}/>
   )
 }
 

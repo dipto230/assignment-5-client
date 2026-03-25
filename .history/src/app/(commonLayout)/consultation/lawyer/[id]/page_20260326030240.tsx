@@ -149,7 +149,7 @@ export default function LawyerDetails() {
       ref={containerRef}
       className="max-w-6xl mx-auto px-6 mt-24 grid md:grid-cols-3 gap-12"
     >
-     
+      {/* LEFT */}
       <div className="flex flex-col items-start gap-5">
         {lawyer.profilePhoto ? (
           <div className="relative w-28 h-28">
@@ -189,7 +189,7 @@ export default function LawyerDetails() {
         </button>
       </div>
 
-  
+      {/* RIGHT */}
       <div className="md:col-span-2 space-y-10">
         <div className="space-y-3 text-sm">
           <p><span className="text-gray-400">Experience:</span> {lawyer.experience} years</p>

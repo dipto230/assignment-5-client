@@ -25,11 +25,7 @@ export default function Sidebar() {
       
      
       <div className="mb-8">
-        <Link href="/">
-    <h2 className="text-xl font-bold tracking-tight cursor-pointer">
-      LawHive
-    </h2>
-  </Link>
+        <h2 className="text-xl font-bold tracking-tight">LawHive</h2>
         <p className="text-xs text-muted-foreground">Dashboard</p>
       </div>
 
