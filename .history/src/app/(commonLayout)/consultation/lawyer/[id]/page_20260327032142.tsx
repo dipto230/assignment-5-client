@@ -28,7 +28,7 @@ export default function LawyerDetails() {
           fetch(`https://assignment-5-backend-nine.vercel.app/api/v1/lawyers/${id}`, {
             credentials: "include",
           }),
-          fetch(`https://assignment-5-backend-nine.vercel.app/api/v1/lawyer-schedules?lawyerId=${id}`, {
+          fetch(`http://localhost:5000/api/v1/lawyer-schedules?lawyerId=${id}`, {
             credentials: "include",
           }),
         ]);
@@ -89,7 +89,7 @@ export default function LawyerDetails() {
 
     try {
       const res = await fetch(
-        "https://assignment-5-backend-nine.vercel.app/api/v1/appointments/book-appointment",
+        "http://localhost:5000/api/v1/appointments/book-appointment",
         {
           method: "POST",
           headers: {

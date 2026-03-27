@@ -89,7 +89,7 @@ export default function LawyerDetails() {
 
     try {
       const res = await fetch(
-        "https://assignment-5-backend-nine.vercel.app/api/v1/appointments/book-appointment",
+        "http://localhost:5000/api/v1/appointments/book-appointment",
         {
           method: "POST",
           headers: {

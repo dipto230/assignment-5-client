@@ -29,7 +29,7 @@ export default function ReviewsPage() {
   const [editReviewId, setEditReviewId] = useState<string | null>(null);
 
   // --- Queries ---
-  const { data: reviews = [], isLoading } = useQuery({
+  const { data: reviews = [], isLoading } = useQuery<Review[]>({
     queryKey: ["myReviews"],
     queryFn: async () => {
       const { data } = await apiClient.get("/api/v1/reviews/my-reviews");
@@ -135,7 +135,7 @@ export default function ReviewsPage() {
           </tr>
         </thead>
         <tbody>
-          {reviews.map((review) => (
+          {reviews.map((review: Review) => (
             <tr key={review.id}>
               <td className="border p-2">{review.appointmentId}</td>
               <td className="border p-2">{review.rating}</td>

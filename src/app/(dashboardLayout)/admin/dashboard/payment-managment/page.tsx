@@ -18,17 +18,16 @@ export default function AdminPayments() {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  // Fetch paginated payments
+  // ✅ FIXED HERE
   const { data, isLoading } = useQuery({
     queryKey: ["payments", page],
     queryFn: () => paymentService.getAll(page, limit),
-    keepPreviousData: true,
+    placeholderData: (prev) => prev,
   });
 
-  // Optional: delete payment mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => paymentService.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(["payments"]),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["payments"] }),
   });
 
   if (isLoading) return <div className="p-8">Loading payments...</div>;
@@ -37,9 +36,9 @@ export default function AdminPayments() {
     <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Admin Payments</h1>
 
-      {data?.data.length > 0 ? (
+      {/* ✅ FIXED HERE */}
+      {data?.data?.data?.length > 0 ? (
         <>
-          {/* Table */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -51,22 +50,31 @@ export default function AdminPayments() {
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {data.data.map((p: any) => (
+              {/* ✅ FIXED HERE */}
+              {data?.data?.data?.map((p: any) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.id}</TableCell>
                   <TableCell>{p.appointmentId}</TableCell>
                   <TableCell>₹{p.amount}</TableCell>
+
                   <TableCell>
                     {p.status === "PAID" ? (
-                      <span className="text-green-600 font-semibold">{p.status}</span>
+                      <span className="text-green-600 font-semibold">
+                        {p.status}
+                      </span>
                     ) : (
-                      <span className="text-red-600 font-semibold">{p.status}</span>
+                      <span className="text-red-600 font-semibold">
+                        {p.status}
+                      </span>
                     )}
                   </TableCell>
+
                   <TableCell>
                     {new Date(p.createdAt).toLocaleString()}
                   </TableCell>
+
                   <TableCell>
                     <Button
                       variant="destructive"
@@ -89,11 +97,14 @@ export default function AdminPayments() {
             >
               Previous
             </Button>
+
+            {/* ✅ FIXED HERE */}
             <span className="flex items-center px-2">
-              Page {page} of {data.meta.totalPages}
+              Page {page} of {data?.data?.meta?.totalPages}
             </span>
+
             <Button
-              disabled={page === data.meta.totalPages}
+              disabled={page === data?.data?.meta?.totalPages}
               onClick={() => setPage((prev) => prev + 1)}
             >
               Next

@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // ✅ logout function
   const logout = async () => {
     try {
-      await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/auth/logout", {
+      await fetch("http://localhost:5000/api/v1/auth/logout", {
         method: "POST",
         credentials: "include",
       });

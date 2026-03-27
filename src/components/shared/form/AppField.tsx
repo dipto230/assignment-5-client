@@ -9,6 +9,7 @@ interface AppFieldProps {
   type?: string;
   placeholder?: string;
   append?: React.ReactNode;
+  className?: string;
 }
 
 const AppField = ({

@@ -1,6 +1,6 @@
 export const getLawyers = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/v1/lawyers", {
+    const res = await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/lawyers", {
       cache: "no-store",
     });
 

@@ -56,7 +56,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/auth/logout", {
+    await fetch("https://assignment-5-backend-nine.vercel.app//api/v1/auth/logout", {
       method: "POST",
       credentials: "include",
     });

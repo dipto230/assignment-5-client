@@ -1,20 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { getPracticeAreas } from "@/lib/getPracticeAreas";
 import Image from "next/image";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic"; 
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+async function getPracticeAreas() {
+  const res = await fetch(`${API_BASE}/practiceArea`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch practice areas");
+  const data = await res.json();
+  return data.data;
+}
 
 export default async function PracticeArea() {
   const data = await getPracticeAreas();
 
   return (
     <section className="py-20 px-6 bg-linear-to-r from-white to-gray-50">
-      
       {/* HEADER */}
       <div className="text-center mb-14">
-        <h1 className="text-4xl font-bold">
-          Our Legal Services
-        </h1>
+        <h1 className="text-4xl font-bold">Our Legal Services</h1>
         <p className="text-gray-500 mt-3">
           Explore all the practice areas we specialize in
         </p>
@@ -22,24 +28,21 @@ export default async function PracticeArea() {
 
       {/* GRID */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        
         {data.map((item: any) => (
           <Link key={item.id} href={`/practiceArea/${item.id}`}>
-            
             <div className="group p-6 rounded-2xl border bg-white shadow-sm hover:shadow-2xl transition duration-300 cursor-pointer relative overflow-hidden">
-          
               <div className="absolute inset-0 bg-linear-to-r from-blue-500/0 to-indigo-500/0 group-hover:from-blue-500/10 group-hover:to-indigo-500/10 transition duration-500"></div>
 
               {/* Icon or Initial */}
               <div className="mb-4">
                 {item.icon ? (
-                <Image
-  src={item.icon}
-  alt="service icon"
-  width={48}
-  height={48}
-  className="rounded-full object-cover"
-/>
+                  <Image
+                    src={item.icon}
+                    alt="service icon"
+                    width={48}
+                    height={48}
+                    className="rounded-full object-cover"
+                  />
                 ) : (
                   <div className="w-12 h-12 flex items-center justify-center rounded-full bg-linear-to-r from-blue-500 to-indigo-600 text-white font-bold">
                     {item.title.charAt(0)}
@@ -54,12 +57,9 @@ export default async function PracticeArea() {
 
               {/* Bottom line animation */}
               <div className="absolute bottom-0 left-0 h-1 w-0 bg-blue-600 group-hover:w-full transition-all duration-300"></div>
-
             </div>
-
           </Link>
         ))}
-
       </div>
     </section>
   );

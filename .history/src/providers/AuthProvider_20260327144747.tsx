@@ -27,18 +27,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   // ✅ logout function
-  const logout = async () => {
-    try {
-      await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setUser(null);
-      router.replace("/login"); // redirect after logout
-    }
+  const logout = () => {
+    localStorage.removeItem("accessToken"); // 🔥 remove token
+    setUser(null);
+    router.replace("/login");
   };
 
   useEffect(() => {
@@ -48,11 +40,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("🚀 FETCH START");
 
       try {
-        const res = await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/auth/me", {
-          method: "GET",
-          credentials: "include",
-          signal: controller.signal,
-        });
+        const token = localStorage.getItem("accessToken"); // 🔥 get token
+
+        if (!token) {
+          console.log("❌ No token found");
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch(
+          "https://assignment-5-backend-nine.vercel.app/api/v1/auth/me",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // 💣 MAIN FIX
+            },
+            signal: controller.signal,
+          }
+        );
 
         console.log("✅ RESPONSE:", res.status);
 

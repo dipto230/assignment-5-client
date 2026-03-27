@@ -1,1 +1,0 @@
-QueryProvider.tsx

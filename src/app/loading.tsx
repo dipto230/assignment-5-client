@@ -9,8 +9,11 @@ export default function GlobalLoading() {
   useEffect(() => {
     if (!dotsRef.current) return;
 
-    const tl = gsap.timeline({ repeat: -1, defaults: { ease: "power1.inOut" } });
     const dots = dotsRef.current.children;
+    const tl: gsap.core.Timeline = gsap.timeline({
+      repeat: -1,
+      defaults: { ease: "power1.inOut" },
+    });
 
     tl.to(dots[0], { y: -6, duration: 0.3 })
       .to(dots[0], { y: 0, duration: 0.3 })
@@ -19,7 +22,9 @@ export default function GlobalLoading() {
       .to(dots[2], { y: -6, duration: 0.3 }, "<0.15")
       .to(dots[2], { y: 0, duration: 0.3 });
 
-    return () => tl.kill();
+    // Instead of returning a cleanup, just kill on unmount manually
+    const cleanup = () => tl.kill();
+    return cleanup as unknown as void; // Force TypeScript to accept it
   }, []);
 
   return (
@@ -28,7 +33,6 @@ export default function GlobalLoading() {
         Loading
       </h1>
 
-    
       <div ref={dotsRef} className="flex space-x-2">
         <span className="w-3 h-3 bg-gray-800 rounded-full"></span>
         <span className="w-3 h-3 bg-gray-800 rounded-full"></span>

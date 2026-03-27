@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("🚀 FETCH START");
 
       try {
-        const res = await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/auth/me", {
+        const res = await fetch("http://localhost:5000/api/v1/auth/me", {
           method: "GET",
           credentials: "include",
           signal: controller.signal,
