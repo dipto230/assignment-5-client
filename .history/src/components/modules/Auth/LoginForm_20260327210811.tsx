@@ -17,7 +17,6 @@ import { useState } from "react";
 
 import { getUserInfo } from "@/services/auth.services";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/providers/AuthProvider";
 
 interface LoginFormProps {
     redirectPath ?: string;
