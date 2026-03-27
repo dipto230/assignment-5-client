@@ -12,7 +12,7 @@ export const setCookie = async (
     cookieStore.set(name, value, {
         httpOnly : true,
         secure : true,
-        sameSite : "none",
+        sameSite : "strict",
         path : "/",
         maxAge : maxAgeInSeconds,
     })
