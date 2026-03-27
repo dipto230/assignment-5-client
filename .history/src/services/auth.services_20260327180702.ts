@@ -55,11 +55,11 @@ export async function getNewTokensWithRefreshToken(refreshToken: string): Promis
  */
 export async function getUserInfo() {
   try {
-    // ✅ cookies() async, so await it
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
     const sessionToken = cookieStore.get("better-auth.session_token")?.value;
 
+  
     if (!accessToken && !sessionToken) {
       return null;
     }

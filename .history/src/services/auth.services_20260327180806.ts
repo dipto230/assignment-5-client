@@ -53,39 +53,3 @@ export async function getNewTokensWithRefreshToken(refreshToken: string): Promis
 /**
  * Get current user info using accessToken and session_token
  */
-export async function getUserInfo() {
-  try {
-    // ✅ cookies() async, so await it
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    const sessionToken = cookieStore.get("better-auth.session_token")?.value;
-
-    if (!accessToken && !sessionToken) {
-      return null;
-    }
-
-    const cookieHeader = [
-      accessToken ? `accessToken=${accessToken}` : "",
-      sessionToken ? `better-auth.session_token=${sessionToken}` : "",
-    ].filter(Boolean).join("; ");
-
-    const res = await fetch(`${BASE_API_URL}/auth/me`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieHeader,
-      },
-    });
-
-    if (!res.ok) {
-      console.error("Failed to fetch user info:", res.status, res.statusText);
-      return null;
-    }
-
-    const { data } = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    return null;
-  }
-}
