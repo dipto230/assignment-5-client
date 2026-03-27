@@ -27,7 +27,7 @@ async function tryRefreshToken(
     }
 
     try {
-        await getNewTokensWithRefreshToken();
+        await getNewTokensWithRefreshToken(refreshToken);
     } catch (error : any) {
         console.error("Error refreshing token in http client:", error);
     }

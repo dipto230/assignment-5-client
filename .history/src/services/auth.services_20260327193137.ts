@@ -1,30 +1,17 @@
-import { cookies } from "next/headers";
+
+
 import { setTokenInCookies } from "@/lib/tokenUtils";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 /**
- * 👉 helper to build cookie header
- */
-function getCookieHeader() {
-  const cookieStore = cookies();
-
-  return cookieStore
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join("; ");
-}
-
-/**
- * Refresh accessToken and session token (SERVER SAFE)
+ * Refresh accessToken and session token
  */
 export async function getNewTokensWithRefreshToken(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_API_URL}/auth/refresh-token`, {
       method: "POST",
-      headers: {
-        Cookie: getCookieHeader(), // ✅ manually send cookie
-      },
+      credentials: "include", // ✅ auto cookie send
     });
 
     if (!res.ok) {
@@ -36,7 +23,7 @@ export async function getNewTokensWithRefreshToken(): Promise<boolean> {
 
     const { accessToken, refreshToken, token } = data;
 
-    // ✅ set cookies again (server-side)
+    // ✅ optionally set cookies again (server side)
     if (accessToken) {
       setTokenInCookies("accessToken", accessToken);
     }
@@ -57,16 +44,13 @@ export async function getNewTokensWithRefreshToken(): Promise<boolean> {
 }
 
 /**
- * Get current user info (SERVER SAFE)
+ * Get current user info
  */
 export async function getUserInfo() {
   try {
     const res = await fetch(`${BASE_API_URL}/auth/me`, {
       method: "GET",
-      headers: {
-        Cookie: getCookieHeader(), // ✅ important
-      },
-      cache: "no-store",
+      credentials: "include", // ✅ auto cookie send
     });
 
     if (!res.ok) {

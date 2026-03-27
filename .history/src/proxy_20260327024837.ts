@@ -5,9 +5,9 @@ import { isTokenExpiringSoon } from "./lib/tokenUtils";
 import { getNewTokensWithRefreshToken, getUserInfo } from "./services/auth.services";
 
 
-async function refreshTokenMiddleware () : Promise<boolean> {
+async function refreshTokenMiddleware (refreshToken : string) : Promise<boolean> {
     try {
-        const refresh = await getNewTokensWithRefreshToken();
+        const refresh = await getNewTokensWithRefreshToken(refreshToken);
         if(!refresh){
             return false;
         }
@@ -57,7 +57,7 @@ export async function proxy (request : NextRequest) {
 
 
             try {
-                const refreshed = await refreshTokenMiddleware();
+                const refreshed = await refreshTokenMiddleware(refreshToken);
 
                 if(refreshed){
                     requestHeaders.set("x-token-refreshed", "1");

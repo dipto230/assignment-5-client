@@ -57,7 +57,7 @@ export async function proxy (request : NextRequest) {
 
 
             try {
-                const refreshed = await refreshTokenMiddleware();
+                const refreshed = await refreshTokenMiddleware(refreshToken as str);
 
                 if(refreshed){
                     requestHeaders.set("x-token-refreshed", "1");
