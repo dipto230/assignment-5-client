@@ -43,7 +43,7 @@ export default function ScheduleManagement() {
   console.log("Sending payload:", payload); // DEBUG
 
   return scheduleService.create(payload);
-},
+},,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedules"] }); 
       setNewSchedule({ startDateTime: "", endDateTime: "" });

@@ -29,21 +29,7 @@ export default function ScheduleManagement() {
 
   // Create schedule
   const createMutation = useMutation({
-   mutationFn: () => {
-  const [startDate, startTime] = newSchedule.startDateTime.split("T");
-  const [endDate, endTime] = newSchedule.endDateTime.split("T");
-
-  const payload = {
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-  };
-
-  console.log("Sending payload:", payload); // DEBUG
-
-  return scheduleService.create(payload);
-},
+    mutationFn: () => scheduleService.create(newSchedule),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedules"] }); 
       setNewSchedule({ startDateTime: "", endDateTime: "" });
