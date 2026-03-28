@@ -66,7 +66,7 @@ export default function MyProfilePage() {
       console.log("🔥 FINAL PAYLOAD:", payload);
 
       const res = await fetch(
-        "https://assignment-5-backend-nine.vercel.app/api/v1/clients/update-my-profile",
+        "https://assignment-5-backend-sepia.vercel.app/api/v1/clients/update-my-profile",
         {
           method: "PATCH",
           credentials: "include",

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getNewTokensWithRefreshToken } from '@/services/auth.services';
+import { getNewTokensWithRefreshToken } from '@/services/auth.server';
 import { ApiResponse } from '@/types/api.types';
 import axios from 'axios';
 import { cookies, headers } from 'next/headers';
@@ -13,7 +13,8 @@ if(!API_BASE_URL) {
 
 async function tryRefreshToken(
     accessToken: string,
-    refreshToken: string
+    
+
 ): Promise<void>
 {
     if(!(await isTokenExpiringSoon(accessToken))) {
@@ -39,7 +40,7 @@ const axiosInstance = async () => {
     const refreshToken = cookieStore.get("refreshToken")?.value;
 
     if(accessToken && refreshToken){
-        await tryRefreshToken(accessToken, refreshToken);
+        await tryRefreshToken(accessToken);
     }
 
     const cookieHeader = cookieStore

@@ -34,6 +34,8 @@ export const setTokenInCookies = async (
         maxAgeInSeconds = getTokenSecondsRemaining(token);
     }
 
+    console.log(`🔹 Setting cookie ${name}:`, token);
+
     await setCookie(name, token, maxAgeInSeconds || fallbackMaxAgeInSeconds);
 }
 

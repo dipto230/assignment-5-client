@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import gsap from "gsap";
+import { apiClient } from "@/lib/apiClient";
 
 export default function LawyerDetails() {
   const { id } = useParams();
@@ -25,36 +26,16 @@ export default function LawyerDetails() {
     const fetchData = async () => {
       try {
         const [lawyerRes, scheduleRes] = await Promise.all([
-          fetch(`https://assignment-5-backend-nine.vercel.app/api/v1/lawyers/${id}`, {
-            credentials: "include",
-          }),
-          fetch(`https://assignment-5-backend-nine.vercel.app/api/v1/lawyer-schedules?lawyerId=${id}`, {
-            credentials: "include",
-          }),
+          apiClient.get(`/lawyers/${id}`),
+          apiClient.get(`/lawyer-schedules?lawyerId=${id}`),
         ]);
 
-        if (!lawyerRes.ok) {
-          const text = await lawyerRes.text();
-          console.error("Lawyer API error:", text);
-          return;
-        }
-
-        const lawyerData = await lawyerRes.json();
-
-        if (!scheduleRes.ok) {
-          const text = await scheduleRes.text();
-          console.error("Schedule API error:", text);
-          return;
-        }
-
-        const scheduleData = await scheduleRes.json();
-
         if (isMounted) {
-          setLawyer(lawyerData.data);
-          setSchedules(scheduleData.data || []);
+          setLawyer(lawyerRes.data.data);
+          setSchedules(scheduleRes.data.data || []);
         }
-      } catch (error) {
-        console.error("Fetch error:", error);
+      } catch (error: any) {
+        console.error("Fetch error:", error?.response?.status, error?.message);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -88,31 +69,13 @@ export default function LawyerDetails() {
     setBookingLoading(true);
 
     try {
-      const res = await fetch(
-        "https://assignment-5-backend-nine.vercel.app/api/v1/appointments/book-appointment",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            lawyerId: id,
-            scheduleId: selected,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("Booking API error:", text);
-        throw new Error("Booking failed");
-      }
-
-      const data = await res.json();
+      const res = await apiClient.post("/appointments/book-appointment", {
+        lawyerId: id,
+        scheduleId: selected,
+      });
 
       // redirect to payment page
-     const paymentUrl = data.data.paymentUrl;
+      const paymentUrl = res.data?.data?.paymentUrl;
       if (paymentUrl) {
         window.location.href = paymentUrl; 
       } else {
@@ -120,7 +83,9 @@ export default function LawyerDetails() {
         router.push("/my-appointments");
       }
     } catch (error: any) {
-      alert(error.message);
+      const errorMsg = error?.response?.data?.message || error?.message || "Booking failed";
+      alert(errorMsg);
+      console.error("Booking error:", error);
     } finally {
       setBookingLoading(false);
     }

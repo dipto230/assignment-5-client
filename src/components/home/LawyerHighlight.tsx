@@ -10,7 +10,7 @@ const LawyerHighlight = () => {
   useEffect(() => {
     const fetchLawyers = async () => {
       try {
-        const res = await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/lawyers", {
+        const res = await fetch("https://assignment-5-backend-sepia.vercel.app/api/v1/lawyers", {
           credentials: "include", // 🔥 IMPORTANT
         });
 

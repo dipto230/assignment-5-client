@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
- 
+import { useAuth } from "@/providers/AuthProvider";
 
 const menu = [
   { label: "Dashboard", href: "/admin/dashboard" },
@@ -18,12 +18,11 @@ const menu = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    // Clear any auth tokens or session here
-    // Example: signOut() if you have an auth provider
-    localStorage.removeItem("token"); // or whatever you use
-    router.push("/login"); // redirect to login
+  const handleLogout = async () => {
+    await logout();
+    // logout() already handles the redirect to /login
   };
 
   return (

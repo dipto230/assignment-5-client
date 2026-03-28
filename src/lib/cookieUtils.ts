@@ -12,18 +12,23 @@ export const setCookie = async (
     cookieStore.set(name, value, {
         httpOnly : true,
         secure : true,
-        sameSite : "none",
+        sameSite : "lax",
         path : "/",
         maxAge : maxAgeInSeconds,
-    })
+    });
+    
+    console.log(`🍪 Set cookie: ${name} (expires in ${maxAgeInSeconds}s)`);
 }
 
 export const getCookie = async (name : string) => {
     const cookieStore = await cookies();
-    return cookieStore.get(name)?.value;
+    const value = cookieStore.get(name)?.value;
+    console.log(`🍪 Get cookie: ${name} = ${value ? '✅' : '❌'}`);
+    return value;
 }
 
 export const deleteCookie = async (name : string) => {
     const cookieStore = await cookies();
     cookieStore.delete(name);
+    console.log(`🗑️  Delete cookie: ${name}`);
 }

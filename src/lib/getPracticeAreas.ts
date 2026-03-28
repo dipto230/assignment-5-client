@@ -1,6 +1,6 @@
 export const getPracticeAreas = async () => {
   try {
-    const res = await fetch("https://assignment-5-backend-nine.vercel.app/api/v1/practiceArea", {
+    const res = await fetch("https://assignment-5-backend-sepia.vercel.app/api/v1/practiceArea", {
       cache: "no-store", // important for fresh data
     });
 

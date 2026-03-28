@@ -8,7 +8,7 @@ const PracticeAreaHighlight = () => {
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("https://assignment-5-backend-nine.vercel.app/api/v1/practiceArea")
+    fetch("https://assignment-5-backend-sepia.vercel.app/api/v1/practiceArea")
       .then((res) => res.json())
       .then((res) => setData(res.data || []));
   }, []);

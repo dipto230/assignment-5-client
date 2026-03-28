@@ -1,6 +1,7 @@
 "use client";
 
 import Sidebar from "@/components/dashboard/Sidebar";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 export default function ClientDashboardLayout({
   children,
@@ -8,6 +9,7 @@ export default function ClientDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
+    <AuthProvider>
     <div className="flex min-h-screen">
       
       {/* 🔥 Sidebar */}
@@ -18,6 +20,7 @@ export default function ClientDashboardLayout({
         {children}
       </main>
 
-    </div>
+      </div>
+      </AuthProvider>
   );
 }

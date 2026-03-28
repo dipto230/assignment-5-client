@@ -23,7 +23,7 @@ export default function EditLawyerPage() {
   useEffect(() => {
     const fetchLawyer = async () => {
       try {
-        const res = await apiClient.get(`/api/v1/lawyers/${id}`);
+        const res = await apiClient.get(`/lawyers/${id}`);
         const data = res.data.data;
 
         setForm({
@@ -49,7 +49,7 @@ export default function EditLawyerPage() {
     e.preventDefault();
 
     try {
-      await apiClient.patch(`/api/v1/lawyers/${id}`, {
+      await apiClient.patch(`/lawyers/${id}`, {
         lawyer: {
           name: form.name,
           contactNumber: form.contactNumber,

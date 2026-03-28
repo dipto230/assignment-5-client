@@ -15,9 +15,11 @@ import { useState } from "react";
 
 // 🔥 ADDED
 
-import { getUserInfo } from "@/services/auth.services";
+
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
+
+
 
 interface LoginFormProps {
     redirectPath ?: string;
@@ -45,18 +47,36 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
         onSubmit : async ({value}) => {
             setServerError(null);
             try {
-                const result = await mutateAsync(value) as any;
+              const result = await mutateAsync(value) as any;
+               console.log(result);
 
-                if(!result.success ){
-                    setServerError(result.message || "Login failed");
-                    return ;
-                }
+if (!result.success) {
+  // Handle email not verified
+  if (result.emailNotVerified) {
+    router.push(`/verify-email?email=${result.email}`);
+    return;
+  }
+  setServerError(result.message || "Login failed");
+  return;
+}
 
-                // 🔥 FIX START
-                const userData = await getUserInfo();
-                setUser(userData);
-                router.push("/");
-                // 🔥 FIX END
+// Set user data from login response
+setUser(result.user);
+
+// Store tokens in localStorage as backup (client-side persistence)
+if (typeof window !== "undefined") {
+  if (result.accessToken) localStorage.setItem("accessToken", result.accessToken);
+  if (result.refreshToken) localStorage.setItem("refreshToken", result.refreshToken);
+  console.log("✅ Tokens stored in localStorage");
+}
+
+// Handle password change redirect
+if (result.needPasswordChange) {
+  router.push(`/reset-password?email=${result.email}`);
+} else {
+  // Redirect to dashboard
+  router.push(result.redirectPath || "/");
+}
 
             } catch (error : any) {
                 console.log(`Login failed: ${error.message}`);

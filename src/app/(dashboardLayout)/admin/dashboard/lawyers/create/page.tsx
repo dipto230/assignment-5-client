@@ -35,7 +35,7 @@ export default function CreateLawyer() {
   useEffect(() => {
     const fetchPracticeAreas = async () => {
       try {
-        const res = await apiClient.get("/api/v1/practiceArea");
+        const res = await apiClient.get("/practiceArea");
         setPracticeAreas(res.data.data);
       } catch (error) {
         console.error("Error fetching practice areas", error);
@@ -77,7 +77,7 @@ export default function CreateLawyer() {
     }
 
     try {
-      await apiClient.post("/api/v1/users/create-lawyer", {
+      await apiClient.post("/users/create-lawyer", {
         password: form.password,
         lawyer: {
           name: form.name,
